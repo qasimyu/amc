@@ -38,13 +38,14 @@ amc -i testdata/example.txt -o testdata/example
 ### 1. Genotype Matrix
 
 The SNVs of single cells are denoted as a genotype matrix D. Each row represents a mutation, and each column represents a single cell. Columns are separated by tabs. 
-The genotype matrix can be ternary with each element D[i,j] being
+
+The genotype matrix can be ternary with element D[i,j] being
 
 * 0 if mutation i is not observed in cell j,
 * 1 if mutation i is observed in cell j, or
 * 3 if the genotype information is missing
 
-The genotype matrix can also be quaternary with each element D[i,j] being
+The genotype matrix can also be quaternary with element D[i,j] being
 
 * 0 if mutation i is not observed in cell j,
 * 1 if heterozygous mutation i is observed in cell j
