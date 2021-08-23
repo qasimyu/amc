@@ -18,7 +18,7 @@ cmake .
 make
 ```
 
-After the installation, the main program of AMC is generated in “bin” directory. Type following command if you want to add AMC to system path:
+The main program of AMC is generated in “bin” directory. Type following command if you want to add AMC to your system path:
 ```
 make install
 ```
@@ -77,7 +77,7 @@ The input file to run SCITE is created with suffix "scite_input".
 
 ### phylogenetic tree (optional)
 
-When the path to the executable SCITE command is specified, the phylogenetic tree can be automatically reconstructed and will be written to a file in GraphViz format.
+When the path to the executable SCITE command is specified, the phylogenetic tree will be automatically reconstructed and written to a file in GraphViz format.
 
 ## Arguments
 
