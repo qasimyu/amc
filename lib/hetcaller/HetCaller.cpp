@@ -888,16 +888,16 @@ void HetCaller::saveResults() {
 	int num_cluster = candi_s[best_s_indx].num_cluster;
 	Matrix<int>& states = candi_s[best_s_indx].states;
 	
-	fn = outputPrefix+".cell_gtype";
+	fn = outputPrefix+".recovered_gtm";
 	ofs.open(fn.c_str());
 	if(!ofs.is_open()) {
 		cerr << "Error: cannot open file " << fn << endl;
 		exit(-1);
 	}
-	for(i = 0; i < num_cell; i++) {
-		for(j = 0; j < num_muta; j++) {
-			k = best_indices[j];
-			if(j < num_muta-1) {
+	for(j = 0; j < num_muta; j++) {
+		k = best_indices[j];
+		for(i = 0; i < num_cell; i++) {
+			if(i < num_cell-1) {
 				ofs << states[k*num_cell+i] << " ";
 			}
 			else {
