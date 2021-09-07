@@ -27,6 +27,13 @@ target_link_libraries(amc mydefine)
 
 SET_TARGET_PROPERTIES(amc PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${AMC_BINARY_DIR}/bin)
 
+find_package(Eigen3 REQUIRED)
+if( NOT EIGEN3_INCLUDE_DIR )
+    MESSAGE( FATAL_ERROR "cannot find Eigen3 library.")
+endif()
+include_directories( "${EIGEN3_INCLUDE_DIR}" )
+MESSAGE("Found Eigen3: ${EIGEN3_INCLUDE_DIR}")
+
 find_package(Threads REQUIRED)
 if(THREADS_HAVE_PTHREAD_ARG)
 	set_property(TARGET amc PROPERTY COMPILE_OPTIONS "-pthread")

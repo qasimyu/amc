@@ -6,6 +6,7 @@ Accurate mutation clustering from single-cell sequencing data.
 * Linux systems.
 * CMake3.0+.
 * g++.
+* [libeigen3](https://gitlab.com/libeigen/eigen)
 
 ## Installation
 
