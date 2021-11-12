@@ -408,11 +408,11 @@ void HetCaller::predict(int num_cluster) {
 			j++;
 		}
 		epoches = round(tmp);
-		if(epoches > 50) {
-			epoches = 50;
+		if(epoches > 100) {
+			epoches = 100;
 		}
-		if(epoches < 10) {
-			epoches = 10;
+		if(epoches < 50) {
+			epoches = 50;
 		}
 	}
 	
@@ -434,24 +434,13 @@ void HetCaller::predict(int num_cluster) {
 		else if(candi_s1[i].ll > candi_s1[best_indx].ll) {
 			best_indx = i;
 		}
-		/*
-		else if(candi_s1[i].score > candi_s1[best_indx].score) {
-			best_indx = i;
-		}
-		*/
 	}
 	if(best_indx == -1) {
 		best_indx = 0;
 		for(i = 1; i < candi_s1.size(); i++) {
-			
 			if(candi_s1[i].ll > candi_s1[best_indx].ll) {
 				best_indx = i;
 			}
-			/*
-			if(candi_s1[i].score > candi_s1[best_indx].score) {
-				best_indx = i;
-			}
-			*/
 		}
 	}
 	
@@ -482,14 +471,13 @@ void* HetCaller::inferSolution(const void *arg) {
 	for(i = 0; i < num_cluster; i++) {
 		vector<int>& muta_indxs = muta_assignments[i];
 		k = threadpool->randomInteger(0, muta_indxs.size());
+		k = muta_indxs[k];
 		for(j = 0; j < num_cell; j++) {
 			states[i*num_cell+j] = data[k*num_cell+j];
 		}
 	}
 	
 	// search for optimal initial values of beta
-	double max_alpha = config.getRealPara("max_alpha");
-	double max_beta = config.getRealPara("max_beta");
 	double alpha = config.getRealPara("alpha");
 	double beta = config.getRealPara("beta");
 	
@@ -549,8 +537,7 @@ void HetCaller::inferParas(Solution& s, const vector<int>& para_updates) {
 	Matrix<int>& states = s.states;
 	Matrix<int> states_n(num_cluster, num_cell);
 	
-	double max_alpha = config.getRealPara("max_alpha");
-	double max_beta = config.getRealPara("max_beta");
+	double max_alpha = 0.99, max_beta = 0.99;
 	double eps = numeric_limits<long double>::epsilon();
 	
 	double ll, pre_ll = numeric_limits<long>::min();
@@ -640,20 +627,14 @@ void HetCaller::inferParas(Solution& s, const vector<int>& para_updates) {
 		
 		if(para_updates[0]) {
 			alpha = isnan(alpha_n)? alpha:alpha_n;
+			alpha = (alpha > max_alpha)? max_alpha:alpha;
 		}
 		if(para_updates[1]) {
 			beta = isnan(beta_n)? beta:beta_n;
+			beta = (beta > max_beta)? max_beta:beta;
 		}
 		
-		
-		if(alpha > max_alpha) {
-			alpha = max_alpha;
-		}
-		if(beta > max_beta) {
-			beta = max_beta;
-		}
-		
-		if(fabs(pre_ll-ll) < 0.01) {
+		if(fabs(pre_ll-ll) < 1e-4) {
 			break;
 		}
 		else {
@@ -710,7 +691,14 @@ void* HetCaller::clusterMutations(const void *arg) {
 	paras.set_max_iteration(100);
 	auto cluster_data = dkm::kmeans_lloyd(data_for_cluster, paras, dist, score);
 	
-	hetcaller.saveClusterResults(dist, get<1>(cluster_data));
+	vector<uint32_t>& indices = get<1>(cluster_data);
+	Matrix<int> flags(1, num_cluster, 0);
+	for(int i = 0; i < indices.size(); i++) {
+		flags[indices[i]] = 1;
+	}
+	if(flags.sum() == num_cluster) {
+		hetcaller.saveClusterResults(dist, get<1>(cluster_data));
+	}
 	
 	return NULL;
 }
@@ -807,7 +795,7 @@ void HetCaller::buildTree() {
 	
 	sprintf(buf, "%s -i %s -n %d -m %d", scite.c_str(), dataFile.c_str(), num_cluster, num_cell);
 	string cmd = buf;
-	cmd = cmd+" -r 1 -l 20000 -fd 5e-6 -ad 5e-6 -e 0 -a -max_treelist_size 1";
+	cmd = cmd+" -r 1 -l 50000 -fd 5e-6 -ad 5e-6 -e 0 -a -max_treelist_size 1";
 	sprintf(buf, "%s -o %s > %s.scite.log 2>&1", cmd.c_str(), outputPrefix.c_str(), outputPrefix.c_str());
 	cmd = buf;
 	

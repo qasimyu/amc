@@ -101,10 +101,6 @@ When the path to the executable SCITE command is specified, the phylogenetic tre
 
 * `-b, --beta <Double>` Set \<Double\> to fixed false negative rate.
 
-* `-A, --max_alpha <Double>`  Set \<Double\> to the desired maximum false positive rate (effective when -a is not set). The default value is 0.05.
-
-* `-B, --max_beta <Double>`  Set \<Double\> to the desired maximum false negative rate (effective when -b is not set). The default value is 0.5.
-
 ## Contact
 
 If you have any questions, please contact zhyu@nxu.edu.cn.

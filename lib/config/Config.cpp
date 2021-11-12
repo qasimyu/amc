@@ -24,12 +24,10 @@ Config::Config() {
 	intParas.insert(make_pair("maxc", -1));
 	realParas.insert(make_pair("alpha", -1));
 	realParas.insert(make_pair("beta", -1));
-	realParas.insert(make_pair("max_alpha", 0.05));
-	realParas.insert(make_pair("max_beta", 0.5));
 	
-	intParas.insert(make_pair("km_reps", 50));
-	intParas.insert(make_pair("max_iter", 30));
-	intParas.insert(make_pair("threads", 1));
+	intParas.insert(make_pair("km_reps", 200));
+	intParas.insert(make_pair("max_iter", 50));
+	intParas.insert(make_pair("threads", 100));
 	intParas.insert(make_pair("verbose", 1));
 	
 	realParas.insert(make_pair("eps", numeric_limits<double>::epsilon()));
